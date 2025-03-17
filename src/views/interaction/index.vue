@@ -6,6 +6,8 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { HighlightManager } from '@/utils/highlightManager'
+
 let canvasRef = ref(null)
 
 import * as BABYLON from 'babylonjs'
@@ -50,7 +52,7 @@ const loadModel = async (modelUrl) => {
     const sceneFilename = modelUrl.substring(index + 1);
     let res = await BABYLON.SceneLoader.ImportMeshAsync(null,
         rootUrl, sceneFilename, scene)
-    console.log('@@@res：', res)
+    // console.log('@@@res：', res)
 }
 
 onMounted(() => {
@@ -59,7 +61,13 @@ onMounted(() => {
     initRenderLoop()
     loadModel(modelUrl)
 
-
+    // 初始化场景后
+    const highlightManager = new HighlightManager(scene, {
+        color: BABYLON.Color3.Green(), // 自定义颜色
+        // multiSelect: false,     // 是否允许多选
+        // useHighlightLayer: false, // 使用材质替换
+        // animationSpeed: 0,      // 颜色渐变过渡
+    });
 })
 
 // 监听窗口变化

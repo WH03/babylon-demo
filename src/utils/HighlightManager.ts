@@ -42,7 +42,10 @@ export class HighlightManager {
 
     // 注册点击事件
     private registerPointerEvent() {
+        let isProcessing = false;// 防止重复点击
         this.scene.onPointerDown = (evt, pickResult) => {
+            if (isProcessing) return;
+            isProcessing = true;
             if (pickResult.hit && pickResult.pickedMesh) {
                 this.toggleHighlight(pickResult.pickedMesh);
             } else {
@@ -50,6 +53,8 @@ export class HighlightManager {
                     this.clearHighlights();
                 }
             }
+            // 300ms后允许再次点击
+            setTimeout(() => { isProcessing = false; }, 300);
         };
     }
 
