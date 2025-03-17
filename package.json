@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
+    "@babylonjs/core": "^7.53.3",
     "ant-design-vue": "^4.2.5",
     "babylonjs": "^7.53.3",
     "babylonjs-loaders": "^7.53.3",
@@ -23,6 +24,11 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "sass": "^1.85.1",
     "sass-loader": "^16.0.5",
+    "ts-loader": "^9.5.2",
+    "tslint": "^5.20.1",
+    "tslint-config-standard": "^9.0.0",
+    "tslint-loader": "^3.5.4",
+    "typescript": "^5.8.2",
     "vite": "^6.2.0"
   }
 }

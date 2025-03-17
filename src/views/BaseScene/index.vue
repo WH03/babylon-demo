@@ -18,9 +18,6 @@ onMounted(() => {
     // 创建canvas
     const canvas = document.querySelector('canvas')
     console.log('canvas:', canvas)
-    // 设置canvas的宽高
-    const canvasWidth = canvas.innerWidth;
-    const canvasHeight = canvas.innerHight;
 
     //创建引擎
     const engine = new BABYLON.Engine(canvas, true)
@@ -176,7 +173,6 @@ body,
 canvas {
     width: 100%;
     height: 100%;
-    border: 1px solid red;
 }
 
 
