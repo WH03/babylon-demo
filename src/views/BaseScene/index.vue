@@ -9,21 +9,39 @@ import { onMounted, ref } from 'vue'
 let canvasRef = ref(null)
 
 import * as BABYLON from 'babylonjs'
+let scene, canvas, engine, camera
 
-console.log('@@@babylon', BABYLON)
+// 创建实线
+const createLine = () => {
+    let points = [
+        new BABYLON.Vector3(20, 10, 0),
+        new BABYLON.Vector3(10, 10, 0),
+    ]
+    let lines = BABYLON.MeshBuilder.CreateLines('lines', { points: points }, scene)
+}
+
+// 创建虚线
+const createDashLine = () => {
+    let points = [
+        new BABYLON.Vector3(20, 0, 0),
+        new BABYLON.Vector3(10, 0, 0),
+    ]
+    let dashLine = BABYLON.MeshBuilder.CreateDashedLines('dashLine', {
+        points: points,
+        dashNb: 3,//虚线分段数
+        dashSize: 0.1,//实线部分长度
+        gapSize: 1,//间隔部分长度
+    }, scene)
+}
 
 onMounted(() => {
-    // const canvas = canvasRef.value
 
-    // 创建canvas
-    const canvas = document.querySelector('canvas')
-    console.log('canvas:', canvas)
-
+    canvas = document.querySelector('canvas')
     //创建引擎
-    const engine = new BABYLON.Engine(canvas, true)
-    console.log('engine:', engine)
+    engine = new BABYLON.Engine(canvas, true)
+
     // 创建场景
-    const scene = new BABYLON.Scene(engine)
+    scene = new BABYLON.Scene(engine)
     // 创建相机
     /* 
         参数：
@@ -33,7 +51,7 @@ onMounted(() => {
         radius:相机距离目标点的距离
         target:相机目标点
     */
-    const camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 4, 10, BABYLON.Vector3.Zero(), scene)
+    camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 4, 10, BABYLON.Vector3.Zero(), scene)
     // 设置相机的位置
     camera.setPosition(new BABYLON.Vector3(0, 5, -20))
     camera.attachControl(canvas, true)
@@ -41,7 +59,6 @@ onMounted(() => {
     // 创建一个材质
     const material = new BABYLON.StandardMaterial('material', scene)
     material.diffuseColor = new BABYLON.Color3(1, 1, 0)
-
 
     // 创建球
     const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 2 }, scene)
@@ -84,7 +101,6 @@ onMounted(() => {
     // 缩放
     torus.scaling.set(10, 10, 10)
     // 旋转
-    // torus.rotation.set(Math.PI / 3, 0, 0)
     // 围绕某个点旋转
     torus.rotateAround(
         new BABYLON.Vector3(0, 0, 0),//旋转中心点
@@ -143,6 +159,8 @@ onMounted(() => {
     // 生成阴影
     let shadowGenerator = new BABYLON.ShadowGenerator(1024, spotLight)
     shadowGenerator.addShadowCaster(sphere)
+    createLine()//创建实线
+    createDashLine()//创建虚线
 
 
     // 渲染场景
@@ -150,12 +168,13 @@ onMounted(() => {
         scene.render()
     })
 
-    // 监听窗口变化
-    window.addEventListener('resize', () => {
-        engine.resize()
-    });
-
 })
+
+// 监听窗口变化
+window.addEventListener('resize', () => {
+    engine.resize()
+});
+
 </script>
 
 <style scoped lang="scss">

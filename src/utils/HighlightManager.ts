@@ -1,4 +1,4 @@
-import { Scene, AbstractMesh, HighlightLayer, Color3, StandardMaterial } from "@babylonjs/core";
+import { Scene, AbstractMesh, HighlightLayer, Color3, StandardMaterial } from "babylonjs";
 
 interface HighlightOptions {
     color?: Color3;               // 高亮颜色，默认红色

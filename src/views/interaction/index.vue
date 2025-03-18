@@ -16,8 +16,11 @@ let baseScene;
 const modelUrl = '/models/testModel.glb';
 const initOptions = {
     cameraParams: {
+        alpha: 0, // 相机绕y轴旋转角度
+        beta: Math.PI / 4, // 相机绕x轴旋转角度
         radius: 60, // 自定义相机距离
     },
+
 };
 
 // 添加动画示例
@@ -124,7 +127,7 @@ onMounted(async () => {
 
     try {
         // 初始化 Babylon
-        baseScene = new BaseScene('.canvas');
+        baseScene = new BaseScene('.canvas', initOptions);
         // await baseScene.loadModel(modelUrl);
         // createBox()
         const box = BABYLON.MeshBuilder.CreateBox('box', { size: 2 }, baseScene.scene);
@@ -141,7 +144,7 @@ onMounted(async () => {
         const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 2 }, baseScene.scene)
         sphere.position = new BABYLON.Vector3(0, 5, 0)
 
-        baseScene.startRenderLoop(); // 启动渲染循环
+        // baseScene.startRenderLoop(); // 启动渲染循环
 
     } catch (err) {
         console.log(err)
