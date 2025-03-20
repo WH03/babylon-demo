@@ -134,7 +134,7 @@ onMounted(async () => {
 
         // // 加载模型
         let models = await baseScene.loadModel(modelUrl);
-        // console.log(models)
+        console.log('models:', models)
 
         // 初始化高亮管理器
         new HighlightManager(baseScene.scene, {
@@ -159,6 +159,45 @@ onMounted(async () => {
     // window.addEventListener('resize', () => {
     //     engine.resize()
     // });
+
+
+    /* 
+    计算位置：
+      params：
+        startPos：起始点
+        endPos：结束点
+        division：分割数
+        direction：方向
+    */
+    // const calculatePosition = (startPos: Vector3, endPos: Vector3, division: number, direction: 'x' | 'y' | 'z'): Vector3[] => {
+    //     let distance = startPos.subtract(endPos).length()
+    //     let width = distance / division
+    //     let positions = [];
+    //     for (let i = 0; i < division; i++) {
+    //         const newPoint = startPos.clone();
+    //         switch (direction) {
+    //             case 'x':
+    //                 newPoint.x += width * i;
+    //                 break;
+    //             case 'y':
+    //                 newPoint.y += width * i;
+    //                 break;
+    //             case 'z':
+    //                 newPoint.z += width * i;
+    //                 break;
+    //         }
+    //         positions.push(newPoint)
+    //     }
+    //     return positions
+    // }
+
+    // let startPos = new Vector3(4.03, 1, -3.4)
+    // let endPos = new Vector3(4.03, 1, -0.8)
+
+    // let pos = calculatePosition(startPos, endPos, 4, 'z')
+    // console.log('pos：', pos[2])
+
+
 })
 
 
