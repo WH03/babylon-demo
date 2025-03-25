@@ -29,7 +29,7 @@ export class BaseScene {
         // this.options.enableLight && this.initLight();
         this.initCamera();
         this.initLight();
-        this.initAxesHelper();
+        // this.initAxesHelper();
         this.initResizeListener();
         this.startRenderLoop();
     }
@@ -83,7 +83,7 @@ export class BaseScene {
     }
 
     // 加载模型 (GLB/GLTF)
-    async loadModel(modelUrl) {
+    async loadModel(modelUrl, callback) {
         const index = modelUrl.lastIndexOf("/");
         const rootUrl = modelUrl.substring(0, index + 1);
         const sceneFile = modelUrl.substring(index + 1);
@@ -93,8 +93,36 @@ export class BaseScene {
             rootUrl,
             sceneFile,
             this.scene
-        );
+        ).then((result) => {
+            callback(result);
+        });
     }
+
+    async createModel(params) {
+        const { path, box,
+            position = { x: 0, y: 0, z: 0 },
+            scaling = { x: 0, y: 0, z: 0 },
+            rotation = { x: 0, y: 0, z: 0 }
+        } = params
+        await new BABYLON.AppendSceneAsync(path, this.scene, {
+            onProgress(event) {
+                console.log(event.loaded, event.total, event.lengthComputable)
+            },
+        });
+
+        const mesh = this.scene.getMeshById('BoomBox')
+        if (mesh) {
+            mesh.scaling = new BABYLON.Vector3(scaling?.x, scaling?.y, scaling?.z);
+            mesh.rotation = new BABYLON.Vector3(rotation?.x, rotation?.y, rotation?.z);
+            mesh.position = new BABYLON.Vector3(position?.x, position?.y, position?.z)
+
+        }
+
+        return mesh
+    }
+
+
+
 
 
     // 窗口自适应
