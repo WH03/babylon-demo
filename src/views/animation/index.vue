@@ -98,6 +98,7 @@ onMounted(async () => {
         { width: 100, height: 100 }, baseScene.scene)
     let box = BABYLON.MeshBuilder.CreateBox('box', { width: 5, height: 3, depth: 2 }, baseScene.scene)
     const framerate = 10
+    // 位移动画
     const up = new BABYLON.Animation('animation', 'position', framerate,
         BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
         BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
@@ -115,6 +116,7 @@ onMounted(async () => {
         value: new BABYLON.Vector3(6, 10, 10)
     })
     up.setKeys(keysFrames)
+    // 绕Y轴旋转
     let rotation = new BABYLON.Animation('animation', 'rotation.x', framerate,
         BABYLON.Animation.ANIMATIONTYPE_FLOAT,
         BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
@@ -133,28 +135,11 @@ onMounted(async () => {
     })
     rotation.setKeys(framArr)
     //scene.beginDirectAnimation(box,[rotation,up],0,4*framerate,true)
-    const rote = new BABYLON.Animation('animation', 'alpha', framerate,
-        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-        BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
-    const Frames = []
-    Frames.push({
-        frame: framerate,
-        value: 0
-    })
-    Frames.push({
-        frame: 5 * framerate,
-        value: Math.PI / 2
-    })
-    Frames.push({
-        frame: 10 * framerate,
-        value: Math.PI
-    })
-    rote.setKeys(Frames)
-    //scene.beginDirectAnimation(camera,[rote],0,10*framerate,true)
+    // 旋转
+  
     var animationGrounp = new BABYLON.AnimationGroup('group')
     animationGrounp.addTargetedAnimation(up, box)
     animationGrounp.addTargetedAnimation(rotation, box)
-    // animationGrounp.addTargetedAnimation(rote, baseScene.camera)
     animationGrounp.normalize(0, 40)
     animationGrounp.play(true)
 
