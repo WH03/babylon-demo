@@ -18,6 +18,11 @@ const routes = [
     name: "interaction",
     meta: { title: "交互事件" },
     component: () => import("../views/interaction/index.vue"),
+  }, {
+    path: "/animation",
+    name: "animation",
+    meta: { title: "动画" },
+    component: () => import("../views/animation/index.vue"),
   },
 
 ];
