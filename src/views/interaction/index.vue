@@ -17,6 +17,7 @@ let baseScene;
 // const modelUrl = '/models/testModel.glb';
 // const modelUrl = '/models/tray.glb';
 const modelUrl = '/models/BoomBox.glb';
+const modelUrl2 = '/models/tray.glb';
 const initOptions = {
     cameraParams: {
         alpha: 0, // 相机绕y轴旋转角度
@@ -98,7 +99,6 @@ const createBox = () => {
 
 
 onMounted(async () => {
-
     // 定义两个三维向量
     const pointA = new BABYLON.Vector3(1, 2, 3);
     const pointB = new BABYLON.Vector3(4, 2, 3);
@@ -133,19 +133,28 @@ onMounted(async () => {
     //    });
     //    console.log('trayModel:',trayModel)
 
-    let trayModel = await baseScene.createModel({
+    let model = await baseScene.createModel({
         path: modelUrl,
-        // position: new BABYLON.Vector3(0, 0, 0),
+        position: new BABYLON.Vector3(0, 2, 0),
         // rotation: new BABYLON.Vector3(0, 0, 0),
         scaling: new BABYLON.Vector3(100, 100, 100),
     })
+
+
+    let model2 = await baseScene.createModel({
+        path: modelUrl2,
+        position: new BABYLON.Vector3(12, 5, 0),
+        // rotation: new BABYLON.Vector3(0, 0, 0),
+        scaling: new BABYLON.Vector3(20, 20, 20),
+    })
+
+    model2.position.set(12, 5, 0)
 
     const originalModel = baseScene.scene.getMeshById('BoomBox')
 
 
 
-    originalModel.rotation.y = 0; // 绕 Y 轴归零（关键：修复默认旋转）
-
+    // originalModel.rotation.y = 0; // 绕 Y 轴归零（关键：修复默认旋转）
 
     localAxes.xAxis.parent = originalModel;
     localAxes.yAxis.parent = originalModel;
@@ -172,8 +181,8 @@ onMounted(async () => {
     clonedBox2.rotation = originalModel.rotation.clone(); // 继承旋转
 
     // clonedBox.material =material;
-    clonedBox.position = new BABYLON.Vector3(0, 2.5, 0); // 克隆体向右偏移 2 单位
-    clonedBox2.position = new BABYLON.Vector3(0, 5, 0); // 克隆体向右偏移 2 单位
+    clonedBox.position = new BABYLON.Vector3(-3, 2.5, 0); // 克隆体向右偏移 2 单位
+    clonedBox2.position = new BABYLON.Vector3(-3, 5, 0); // 克隆体向右偏移 2 单位
     // clonedBox.makeGeometryUnique();
 
     // clonedBox.rotation = originalModel.rotation.clone();
@@ -188,9 +197,9 @@ onMounted(async () => {
     // clonedBox.position = groupParent.worldToLocal(clonedBox.getAbsolutePosition());
 
 
-    clonedBox.rotation = originalModel.rotation.clone(); // 继承旋转
+    // clonedBox.rotation = originalModel.rotation.clone(); // 继承旋转
     clonedBox.parent = groupParent;
-    clonedBox.position.z = 2;
+    clonedBox.position.set(10, 3, 3);
     // clonedBox2.parent = groupParent;
     // groupParent.rotation =originalModel.rotation.clone(); // 继承旋转
 
@@ -242,11 +251,11 @@ onMounted(async () => {
     // });
 
 
-    gsap.to([clonedBox2.position, clonedBox.position, originalModel.position], {
-        x: 10, // 移动位置
-        repeat: -1, // 重复次数
-        duration: 5, // 动画持续时间
-    });
+    // gsap.to([clonedBox2.position, clonedBox.position, originalModel.position], {
+    //     x: 10, // 移动位置
+    //     repeat: -1, // 重复次数
+    //     duration: 5, // 动画持续时间
+    // });
 
     //     let animationBox = new BABYLON.Animation("myAnimation", "position.x", 50, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
     // // 定义动画的关键帧

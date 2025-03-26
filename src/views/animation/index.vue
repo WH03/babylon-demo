@@ -35,13 +35,11 @@ const addBoxAnimation = (mesh) => {
         BABYLON.Animation.ANIMATIONTYPE_FLOAT,
         BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
     );
-
     animationY.setKeys([
         { frame: 0, value: 1 },
         { frame: 100, value: 10 },
         { frame: 200, value: 1 },
     ]);
-
     mesh.animations = [animationY];
     baseScene.scene.beginAnimation(mesh, 0, 200, true);
 };
@@ -50,10 +48,6 @@ const addBoxAnimation = (mesh) => {
 // let dictance = +startVec3.subtract(endVec3).length().toFixed(2)
 // console.log('@@@dictance', dictance)
 
-
-
-
-
 onMounted(async () => {
     baseScene = new BaseScene('.canvas', initOptions);
     baseScene.initAxesHelper();
@@ -61,44 +55,108 @@ onMounted(async () => {
     // mesh.position = new BABYLON.Vector3(0, 0, 0);
 
 
-    // 定义两个三维点
-    const point1 = new BABYLON.Vector3(-10, 0, 0);
-    const point2 = new BABYLON.Vector3(10, 0, 0);
+    // // 定义两个三维点
+    // const point1 = new BABYLON.Vector3(-10, 0, 0);
+    // const point2 = new BABYLON.Vector3(10, 0, 0);
 
-    // 创建动画对象
-    const animation = new BABYLON.Animation(
-        "moveAnimation",
-        "position",
-        30,
+    // // 创建动画对象
+    // const animation = new BABYLON.Animation(
+    //     "moveAnimation",
+    //     "position",
+    //     30,
+    //     BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+    //     BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+    // );
+
+    // // 设置关键帧（总时间3秒，90帧）
+    // animation.setKeys([
+    //     { frame: 0, value: point1 },
+    //     { frame: 90, value: point2 }
+    // ]);
+
+    // // 添加缓动函数（平滑过渡）
+    // const easingFunction = new BABYLON.QuadraticEase();
+    // easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASE_IN_OUT);
+    // animation.setEasingFunction(easingFunction);
+
+    // // 绑定到物体并播放
+    // const box = BABYLON.Mesh.CreateBox("box", 1, baseScene.scene);
+    // box.animations = [animation];
+    // baseScene.scene.beginAnimation(box, 0, 90, false);
+
+    // let sphere = new BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 5, segments: 32 }, baseScene.scene);
+    // sphere.showBoundingBox = true
+
+    // const boundingInfo = sphere.getBoundingInfo()//获取包围盒信息
+    // const size = boundingInfo.boundingBox.extendSize//获取包围盒尺寸
+    // console.log('@@@size：', size)
+
+
+
+
+    let ground = BABYLON.MeshBuilder.CreateGround('ground',
+        { width: 100, height: 100 }, baseScene.scene)
+    let box = BABYLON.MeshBuilder.CreateBox('box', { width: 5, height: 3, depth: 2 }, baseScene.scene)
+    const framerate = 10
+    const up = new BABYLON.Animation('animation', 'position', framerate,
         BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
-        BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
-    );
-
-    // 设置关键帧（总时间3秒，90帧）
-    animation.setKeys([
-        { frame: 0, value: point1 },
-        { frame: 90, value: point2 }
-    ]);
-
-    // 添加缓动函数（平滑过渡）
-    const easingFunction = new BABYLON.QuadraticEase();
-    easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASE_IN_OUT);
-    animation.setEasingFunction(easingFunction);
-
-    // 绑定到物体并播放
-    const box = BABYLON.Mesh.CreateBox("box", 1, baseScene.scene);
-    box.animations = [animation];
-    baseScene.scene.beginAnimation(box, 0, 90, false);
-
-    let sphere = new BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 5, segments: 32 }, baseScene.scene);
-    sphere.showBoundingBox = true
-
-    const boundingInfo = sphere.getBoundingInfo()//获取包围盒信息
-    const size = boundingInfo.boundingBox.extendSize//获取包围盒尺寸
-    console.log('@@@size：', size)
-
-
-
+        BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+    const keysFrames = []
+    keysFrames.push({
+        frame: framerate,
+        value: new BABYLON.Vector3(0, 0, 0)
+    })
+    keysFrames.push({
+        frame: 2 * framerate,
+        value: new BABYLON.Vector3(10, 5, 0)
+    })
+    keysFrames.push({
+        frame: 4 * framerate,
+        value: new BABYLON.Vector3(6, 10, 10)
+    })
+    up.setKeys(keysFrames)
+    let rotation = new BABYLON.Animation('animation', 'rotation.x', framerate,
+        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+        BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+    const framArr = []
+    framArr.push({
+        frame: framerate,
+        value: 0
+    })
+    framArr.push({
+        frame: 2 * framerate,
+        value: Math.PI
+    })
+    framArr.push({
+        frame: 4 * framerate,
+        value: Math.PI * 2
+    })
+    rotation.setKeys(framArr)
+    //scene.beginDirectAnimation(box,[rotation,up],0,4*framerate,true)
+    const rote = new BABYLON.Animation('animation', 'alpha', framerate,
+        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+        BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+    const Frames = []
+    Frames.push({
+        frame: framerate,
+        value: 0
+    })
+    Frames.push({
+        frame: 5 * framerate,
+        value: Math.PI / 2
+    })
+    Frames.push({
+        frame: 10 * framerate,
+        value: Math.PI
+    })
+    rote.setKeys(Frames)
+    //scene.beginDirectAnimation(camera,[rote],0,10*framerate,true)
+    var animationGrounp = new BABYLON.AnimationGroup('group')
+    animationGrounp.addTargetedAnimation(up, box)
+    animationGrounp.addTargetedAnimation(rotation, box)
+    // animationGrounp.addTargetedAnimation(rote, baseScene.camera)
+    animationGrounp.normalize(0, 40)
+    animationGrounp.play(true)
 
 })
 
