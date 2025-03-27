@@ -22,7 +22,7 @@ const initOptions = {
     cameraParams: {
         alpha: 0, // 相机绕y轴旋转角度
         beta: Math.PI / 4, // 相机绕x轴旋转角度
-        radius: 60, // 自定义相机距离
+        radius: 30, // 自定义相机距离
     },
 
 };
@@ -105,37 +105,33 @@ onMounted(async () => {
 
     // 计算两点之间的距离
     const distance = new BABYLON.Vector3.Distance(pointA, pointB);
-    console.log("Distance:", distance); // 输出: Distance: 5.196152422706632
-
+    // console.log("Distance:", distance); // 输出: Distance: 5.196152422706632
 
     // try {
     // 初始化 Babylon
     baseScene = new BaseScene('.canvas', initOptions);
+    // baseScene.scene.useRightHandedSystem = true;
+    // baseScene.scene.useLeftHandedSystem = true;
     baseScene.initAxesHelper();
     // 创建一个材质
-    const material = new BABYLON.StandardMaterial('material', baseScene.scene);
+    const redMaterial = new BABYLON.StandardMaterial('material', baseScene.scene);
     const localAxes = new BABYLON.AxesViewer(baseScene.scene, 0.1);
     const localAxes2 = new BABYLON.AxesViewer(baseScene.scene, 0.1);
 
-    material.diffuseColor = new BABYLON.Color3(1, 1, 0)
+    redMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0)
 
-    groupParent = new BABYLON.TransformNode("modelGroup", baseScene.scene);
-    groupParent.rotation = new BABYLON.Vector3(0, 0, 0); // 强制重置旋转
-    groupParent.scaling = new BABYLON.Vector3(1, 1, 1);  // 确保无缩放
+
 
     const box1 = BABYLON.MeshBuilder.CreateBox('box', { size: 2 }, baseScene.scene);
-    box1.position = new BABYLON.Vector3(-10, 0, -10);
-    //    let trayModel = await baseScene.loadModel(modelUrl,(result)=>{
-    //     result.meshes.forEach((mesh) => {
-    //        mesh.scaling = new BABYLON.Vector3(10, 10, 10);
-    //        mesh.rotation.y = 0;
-    //     })
-    //    });
-    //    console.log('trayModel:',trayModel)
+    box1.position = new BABYLON.Vector3(10, 0, -10);
+
+    const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { size: 2 }, baseScene.scene);
+    sphere.position = new BABYLON.Vector3(12, 0, -10);
+
 
     let model = await baseScene.createModel({
         path: modelUrl,
-        position: new BABYLON.Vector3(0, 2, 0),
+        // position: new BABYLON.Vector3(10, 2, 0),
         // rotation: new BABYLON.Vector3(0, 0, 0),
         scaling: new BABYLON.Vector3(100, 100, 100),
     })
@@ -143,17 +139,22 @@ onMounted(async () => {
 
     let model2 = await baseScene.createModel({
         path: modelUrl2,
-        position: new BABYLON.Vector3(12, 5, 0),
+        // position: new BABYLON.Vector3(10, 5, 0),
         // rotation: new BABYLON.Vector3(0, 0, 0),
         scaling: new BABYLON.Vector3(20, 20, 20),
     })
 
-    model2.position.set(12, 5, 0)
+
 
     const originalModel = baseScene.scene.getMeshById('BoomBox')
 
 
-
+    groupParent = new BABYLON.TransformNode("modelGroup", baseScene.scene);
+    // groupParent.rotation = new BABYLON.Vector3(0, 0, 0); // 强制重置旋转
+    // groupParent.scaling = new BABYLON.Vector3(1, 1, 1);  // 确保无缩放
+    // groupParent.translate((0, 0, 0),); // 确保无平移
+    // groupParent.setPivotPoint(new BABYLON.Vector3(0, 0, 0)); // 设置原点为模型中心
+    // console.log('@@@groupParent.translate：', groupParent.translate)
     // originalModel.rotation.y = 0; // 绕 Y 轴归零（关键：修复默认旋转）
 
     localAxes.xAxis.parent = originalModel;
@@ -161,29 +162,22 @@ onMounted(async () => {
     localAxes.zAxis.parent = originalModel;
 
 
+    const clonedBox1 = originalModel.clone("clonedBox");
+    clonedBox1.rotation = originalModel.rotation.clone(); // 继承旋转
+    clonedBox1.material = redMaterial;
+    clonedBox1.parent = groupParent;
+    clonedBox1.translate(new BABYLON.Vector3(0, 0, 0), 1,
+     BABYLON.Space.WORLD); //(-1 + 2, 2 + 3, 1 + 4) = (1, 5, 5)
 
-    // console.log('trayModel:',trayModel)
 
-    // const originalModel = trayModel.meshes[0];
-    // originalModel.rotation.y = 0;
-
-
-    //    console.log('trayModel@@@:',trayModel.clone())
-    // createBox()
-    // const box = BABYLON.MeshBuilder.CreateBox('box', { size: 2 }, baseScene.scene);
-    // const clonedBox = box1.clone("clonedBox");
-    // const clonedBox2 = box1.clone("clonedBox2");
-    const clonedBox = originalModel.clone("clonedBox");
-    clonedBox.rotation = originalModel.rotation.clone(); // 继承旋转
-    clonedBox.material = material;
+    sphere.parent = groupParent;
 
     const clonedBox2 = originalModel.clone("clonedBox2");
     clonedBox2.rotation = originalModel.rotation.clone(); // 继承旋转
 
-    // clonedBox.material =material;
-    clonedBox.position = new BABYLON.Vector3(-3, 2.5, 0); // 克隆体向右偏移 2 单位
-    clonedBox2.position = new BABYLON.Vector3(-3, 5, 0); // 克隆体向右偏移 2 单位
-    // clonedBox.makeGeometryUnique();
+
+    clonedBox2.position = new BABYLON.Vector3(10, 8, 0); // 克隆体向右偏移 2 单位
+
 
     // clonedBox.rotation = originalModel.rotation.clone();
 
@@ -198,14 +192,20 @@ onMounted(async () => {
 
 
     // clonedBox.rotation = originalModel.rotation.clone(); // 继承旋转
-    clonedBox.parent = groupParent;
-    clonedBox.position.set(10, 3, 3);
+
+    // clonedBox.position.set(10, 3, 3);
     // clonedBox2.parent = groupParent;
     // groupParent.rotation =originalModel.rotation.clone(); // 继承旋转
 
     localAxes2.xAxis.parent = clonedBox2;
     localAxes2.yAxis.parent = clonedBox2;
     localAxes2.zAxis.parent = clonedBox2;
+
+    gsap.to([box1.position, originalModel.position, clonedBox2.position, groupParent.position], {
+        x: 15, // 移动位置
+        repeat: -1, // 重复次数
+        duration: 5, // 动画持续时间
+    });
 
 
     // groupParent.rotation.y =Math.PI/2; // 继承旋转
@@ -223,7 +223,6 @@ onMounted(async () => {
     //     clonedBox.rotation = originalModel.rotation.clone();
     // console.log('@@@rotationQuaternion:',originalModel);
     // groupParent.rotationQuaternion = originalModel.rotationQuaternion.clone();
-
 
 
     // gsap.to(groupParent.position, {
@@ -250,12 +249,6 @@ onMounted(async () => {
     // duration: 5, // 动画持续时间
     // });
 
-
-    // gsap.to([clonedBox2.position, clonedBox.position, originalModel.position], {
-    //     x: 10, // 移动位置
-    //     repeat: -1, // 重复次数
-    //     duration: 5, // 动画持续时间
-    // });
 
     //     let animationBox = new BABYLON.Animation("myAnimation", "position.x", 50, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
     // // 定义动画的关键帧
@@ -284,35 +277,10 @@ onMounted(async () => {
     //             baseScene.scene.beginAnimation(trayModel, 0, 100, true);// 最后，我们需要一行代码来启动自己的动画：
 
 
-    // // 加载模型
-    // let models = await baseScene.loadModel(modelUrl);
-    // console.log('models:', models)
-
     // 初始化高亮管理器
-    new HighlightManager(baseScene.scene, {
-        color: BABYLON.Color3.Green(),
-    });
-    // 创建球
-    // const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 2 }, baseScene.scene)
-    // sphere.position = new BABYLON.Vector3(0, 5, 0)
-
-    // baseScene.startRenderLoop(); // 启动渲染循环
-
-    // } catch (err) {
-    //     console.log(err)
-    // }
-
-    // 渲染场景
-    // engine.runRenderLoop(() => {
-    //     scene.render()
-    // })
-
-    // // 监听窗口变化
-    // window.addEventListener('resize', () => {
-    //     engine.resize()
+    // new HighlightManager(baseScene.scene, {
+    //     color: BABYLON.Color3.Green(),
     // });
-
-
 
 })
 
