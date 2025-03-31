@@ -28,13 +28,13 @@ const initOptions = {
 
 
 
-    /* 
-    todo：
-      1、起点码垛机，终点码垛机：入库或者出库，整体上移或下降0.15-->记录上一次的位置，然后计算差值
-      2、起点码垛机，终点辊筒：出库，第一个移动，剩余的下降0.15-->记录上一次的位置，然后计算差值,剩余的根据根据计算结果，整体下降0.15
-      3、起点辊筒，终点码垛机：入库，其他的整体上移0.15
-      4、起点辊筒，终点辊筒：位移，根据传值结果移动。
-  */
+/* 
+todo：
+  1、起点码垛机，终点码垛机：入库或者出库，整体上移或下降0.15-->记录上一次的位置，然后计算差值
+  2、起点码垛机，终点辊筒：出库，第一个移动，剩余的下降0.15-->记录上一次的位置，然后计算差值,剩余的根据根据计算结果，整体下降0.15
+  3、起点辊筒，终点码垛机：入库，其他的整体上移0.15
+  4、起点辊筒，终点辊筒：位移，根据传值结果移动。
+*/
 
 
 // 添加动画示例
@@ -102,57 +102,65 @@ onMounted(async () => {
     // const size = boundingInfo.boundingBox.extendSize//获取包围盒尺寸
     // console.log('@@@size：', size)
 
+    // let ground = BABYLON.MeshBuilder.CreateGround('ground',
+    //     { width: 100, height: 100 }, baseScene.scene)
+    // let box = BABYLON.MeshBuilder.CreateBox('box', { width: 5, height: 3, depth: 2 }, baseScene.scene)
+    // const framerate = 10
+    // // 位移动画
+    // const up = new BABYLON.Animation('animation', 'position', framerate,
+    //     BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+    //     BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+    // const keysFrames = []
+    // keysFrames.push({
+    //     frame: framerate,
+    //     value: new BABYLON.Vector3(0, 0, 0)
+    // })
+    // keysFrames.push({
+    //     frame: 2 * framerate,
+    //     value: new BABYLON.Vector3(10, 5, 0)
+    // })
+    // keysFrames.push({
+    //     frame: 4 * framerate,
+    //     value: new BABYLON.Vector3(6, 10, 10)
+    // })
+    // up.setKeys(keysFrames)
+    // // 绕Y轴旋转
+    // let rotation = new BABYLON.Animation('animation', 'rotation.x', framerate,
+    //     BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+    //     BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
+    // const framArr = []
+    // framArr.push({
+    //     frame: framerate,
+    //     value: 0
+    // })
+    // framArr.push({
+    //     frame: 2 * framerate,
+    //     value: Math.PI
+    // })
+    // framArr.push({
+    //     frame: 4 * framerate,
+    //     value: Math.PI * 2
+    // })
+    // rotation.setKeys(framArr)
+    // //scene.beginDirectAnimation(box,[rotation,up],0,4*framerate,true)
+    // // 旋转
+
+    // var animationGrounp = new BABYLON.AnimationGroup('group')
+    // animationGrounp.addTargetedAnimation(up, box)
+    // animationGrounp.addTargetedAnimation(rotation, box)
+    // animationGrounp.normalize(0, 40)
+    // animationGrounp.play(true)
 
 
+    // 创建一个球体
+    var sphere = new BABYLON.MeshBuilder.CreateBox("box", { width: 5, height: 3, depth: 2 }, baseScene.scene);
 
-    let ground = BABYLON.MeshBuilder.CreateGround('ground',
-        { width: 100, height: 100 }, baseScene.scene)
-    let box = BABYLON.MeshBuilder.CreateBox('box', { width: 5, height: 3, depth: 2 }, baseScene.scene)
-    const framerate = 10
-    // 位移动画
-    const up = new BABYLON.Animation('animation', 'position', framerate,
-        BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
-        BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
-    const keysFrames = []
-    keysFrames.push({
-        frame: framerate,
-        value: new BABYLON.Vector3(0, 0, 0)
-    })
-    keysFrames.push({
-        frame: 2 * framerate,
-        value: new BABYLON.Vector3(10, 5, 0)
-    })
-    keysFrames.push({
-        frame: 4 * framerate,
-        value: new BABYLON.Vector3(6, 10, 10)
-    })
-    up.setKeys(keysFrames)
-    // 绕Y轴旋转
-    let rotation = new BABYLON.Animation('animation', 'rotation.x', framerate,
-        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-        BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
-    const framArr = []
-    framArr.push({
-        frame: framerate,
-        value: 0
-    })
-    framArr.push({
-        frame: 2 * framerate,
-        value: Math.PI
-    })
-    framArr.push({
-        frame: 4 * framerate,
-        value: Math.PI * 2
-    })
-    rotation.setKeys(framArr)
-    //scene.beginDirectAnimation(box,[rotation,up],0,4*framerate,true)
-    // 旋转
-  
-    var animationGrounp = new BABYLON.AnimationGroup('group')
-    animationGrounp.addTargetedAnimation(up, box)
-    animationGrounp.addTargetedAnimation(rotation, box)
-    animationGrounp.normalize(0, 40)
-    animationGrounp.play(true)
+    // 注册一个在每次渲染前执行的函数
+    baseScene.scene.registerBeforeRender(function () {
+        // 这里写你的代码，例如更新球体的位置
+        // Math.sin():它接受一个以弧度为单位的数字作为参数，返回该角度的正弦值，结果范围在 -1 到 1 之间。
+        sphere.position.z = Math.sin(Date.now() * 0.001) * 5; // 使球体在Y轴上上下移动
+    });
 
 })
 
