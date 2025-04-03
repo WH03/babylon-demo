@@ -62,6 +62,12 @@ const addBoxAnimation = (mesh) => {
 onMounted(async () => {
     baseScene = new BaseScene('.canvas', initOptions);
     baseScene.initAxesHelper();
+
+    // 方式一：调用 add 进行监听
+    // const beforeRenderObserver1 = baseScene.scene.onBeforeRenderObservable.add((scene) => {
+    //     console.log('beforeRenderObserver1', scene);
+    // });
+
     // let mesh = new BABYLON.MeshBuilder.CreateBox("box", baseScene.scene);
     // mesh.position = new BABYLON.Vector3(0, 0, 0);
 
@@ -153,7 +159,7 @@ onMounted(async () => {
 
 
     // 创建一个球体
-    var sphere = new BABYLON.MeshBuilder.CreateBox("box", { width: 5, height: 3, depth: 2 }, baseScene.scene);
+    let sphere = new BABYLON.MeshBuilder.CreateBox("box", { width: 5, height: 3, depth: 2 }, baseScene.scene);
 
     // 注册一个在每次渲染前执行的函数
     baseScene.scene.registerBeforeRender(function () {
@@ -163,10 +169,6 @@ onMounted(async () => {
     });
 
 })
-
-
-
-
 
 
 

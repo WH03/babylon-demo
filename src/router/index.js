@@ -23,6 +23,11 @@ const routes = [
     name: "animate",
     meta: { title: "动画" },
     component: () => import("../views/animate/index.vue"),
+  }, {
+    path: "/getConter",
+    name: "getConter",
+    meta: { title: "中心点" },
+    component: () => import("../views/getConter/index.vue"),
   },
 
 ];

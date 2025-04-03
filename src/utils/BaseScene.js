@@ -49,7 +49,7 @@ export class BaseScene {
     // 初始化相机
     initCamera() {
         const { alpha, beta, radius, target } = this.options?.cameraParams;
-        console.log("alpha", alpha, beta, radius, target);
+        // console.log("alpha", alpha, beta, radius, target);
         this.camera = new BABYLON.ArcRotateCamera(
             "mainCamera",
             alpha,
@@ -70,14 +70,14 @@ export class BaseScene {
         // 方向光
         new BABYLON.DirectionalLight(
             "directionalLight",
-            new BABYLON.Vector3(-5, -5, 0),
+            new BABYLON.Vector3(20, 20, 20),
             this.scene
         );
 
         // 环境光
         new BABYLON.HemisphericLight(
             "hemisphericLight",
-            new BABYLON.Vector3(0, 1, 0),
+            new BABYLON.Vector3(20, 20, 20),
             this.scene
         );
     }
