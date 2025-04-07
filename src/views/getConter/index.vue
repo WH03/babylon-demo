@@ -34,7 +34,7 @@ const goGroup = () => {
         // smallBox.scaling.setAll(0.1);
         smallBox.parent = largeBox;
         smallBox.position.set(largeBox.position.x, largeBox.position.y, largeBox.position.z)
-        console.log('@@@model.position:', model.position);
+        // console.log('@@@model.position:', model.position);
     }
 }
 // 解组
@@ -47,7 +47,6 @@ const unGroup = () => {
     // smallBox.position.y = 4; // 将小盒子放置在大盒子上方
     // console.log('@@@smallBox.position:', smallBox.position);
 }
-
 
 
 onMounted(async () => {
@@ -75,8 +74,8 @@ onMounted(async () => {
         scaling: { x: 10, y: 10, z: 10 },
         position: { x: 0, y: 1, z: 0 },
     })
-    
-    console.log('trayModel:', trayModel);
+
+    // console.log('trayModel:', trayModel);
     
     model = baseScene.scene.getMeshByID(trayModel.id);
 
@@ -92,7 +91,7 @@ onMounted(async () => {
     // smallBox.parent = model;
 
     const boundingInfo2 = meshBoundingBoxInfo(model);
-    console.log('boundingInfo2:', boundingInfo2);
+    // console.log('boundingInfo2:', boundingInfo2);
 
     gsap.to(smallBox.position, {
         z: 30,
