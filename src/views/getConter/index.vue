@@ -1,6 +1,12 @@
 <template>
-    <div id="cesiumContainer">
-        <canvas ref="canvasRef" class="canvas">111</canvas>
+    <div id="container">
+        <canvas ref="canvasRef" class="canvas">
+
+        </canvas>
+        <a-space class="btnBox">
+            <a-button type="primary" @click="goGroup">分组</a-button>
+            <a-button type="primary" @click="unGroup">解组</a-button>
+        </a-space>
     </div>
 </template>
 
@@ -8,22 +14,43 @@
 import { onMounted, ref } from 'vue'
 import { BaseScene } from '@/utils/BaseScene.js';
 import * as BABYLON from 'babylonjs'
+import meshBoundingBoxInfo from '@/utils/MeshBoundingBox'//获取模型尺寸包围盒
 import gsap from "gsap";
 
 let baseScene;
-
+const modelUrl2 = '/models/tray.glb'; // 模型地址
 const initOptions = {
     cameraParams: {
         alpha: 0, // 相机绕y轴旋转角度
         beta: Math.PI / 4, // 相机绕x轴旋转角度
-        radius: 30, // 自定义相机距离
+        radius: 50, // 自定义相机距离
     },
 };
+let smallBox, largeBox, model;
+
+// 分组
+const goGroup = () => {
+    if (!smallBox.parent) {
+        // smallBox.scaling.setAll(0.1);
+        smallBox.parent = largeBox;
+        smallBox.position.set(largeBox.position.x, largeBox.position.y, largeBox.position.z)
+        console.log('@@@model.position:', model.position);
+    }
+}
+// 解组
+const unGroup = () => {
+    if (!smallBox.parent) return
+    smallBox.parent = null;
+    smallBox.scaling.setAll(1);
+    smallBox.position.set(model.position.x, model.position.y, model.position.z)
+    // console.log('@@@model.position:', model.position);
+    // smallBox.position.y = 4; // 将小盒子放置在大盒子上方
+    // console.log('@@@smallBox.position:', smallBox.position);
+}
 
 
 
-
-onMounted(() => {
+onMounted(async () => {
     baseScene = new BaseScene('.canvas', initOptions);
     baseScene.initAxesHelper();
 
@@ -31,84 +58,63 @@ onMounted(() => {
     const yellowMaterial = new BABYLON.StandardMaterial('material', baseScene.scene)
     yellowMaterial.diffuseColor = new BABYLON.Color3(1, 1, 0)
 
-
     // 创建大盒子
-    var largeBox = BABYLON.MeshBuilder.CreateBox("largeBox", { height: 6, width: 2, depth: 1 }, baseScene.scene);
+    largeBox = BABYLON.MeshBuilder.CreateBox("largeBox", { height: 6, width: 2, depth: 1 }, baseScene.scene);
+    largeBox.position.set(0, 0, 0);
+
+    // 使用示例
+    // 假设您已经有一个 BABYLON.Mesh 对象
+    // const mesh = baseScene.scene.getMeshByName('largeBox');
+
+    // 调用函数获取边界信息
+    // const boundingInfo = meshBoundingBoxInfo(mesh);
+    // console.log('boundingInfo:', boundingInfo);
+
+    let trayModel = await baseScene.createModel({
+        path: modelUrl2,
+        scaling: { x: 10, y: 10, z: 10 },
+        position: { x: 0, y: 1, z: 0 },
+    })
+    
+    console.log('trayModel:', trayModel);
+    
+    model = baseScene.scene.getMeshByID(trayModel.id);
 
     // 创建小盒子
-    var smallBox = BABYLON.MeshBuilder.CreateBox("smallBox", { height: 2, width: 1, depth: 0.5 }, baseScene.scene);
+    smallBox = BABYLON.MeshBuilder.CreateBox("smallBox", { width: 2, height: 1, depth: 3 }, baseScene.scene);
+    // smallBox.scaling.setAll(0.1);
+    // smallBox.position.y = largeBox.position.y + smallBox.position.y; // 将小盒子放置在大盒子上方
     // smallBox.position.y = 4; // 将小盒子放置在大盒子上方
-    smallBox.position.y = largeBox.position.y + smallBox.position.y; // 将小盒子放置在大盒子上方
 
     smallBox.material = yellowMaterial;
 
     // 将小盒子设置为大盒子的子节点
-    smallBox.parent = largeBox;
-    console.log('@@@smallBox:', smallBox);
+    // smallBox.parent = model;
 
-    console.log('@@@largeBox.position:', largeBox.position);
+    const boundingInfo2 = meshBoundingBoxInfo(model);
+    console.log('boundingInfo2:', boundingInfo2);
 
+    gsap.to(smallBox.position, {
+        z: 30,
+        duration: 5,
+        repeat: -1,
+        ease: "linear",
+        onComplete: (value) => {
+            console.log("动画完成:value", value);
+        }
+    })
 
-
-
-
-
-    // 假设你已经有一个 Mesh 对象，比如 myMesh
-    let boundingInfo = largeBox.getBoundingInfo();
-    let boundingSphere = boundingInfo.boundingSphere;
-
-    // 包围球的中心点
-    let center = boundingSphere.centerWorld;
-    console.log('@@@center:', center);
-
-
-
-    // 假设你已经加载了一个模型，并将其赋值给变量 `mesh`
-    const mesh = baseScene.scene.getMeshByName("largeBox");
-    // 获取模型的包围盒信息
-    const boundingInfo2 = mesh.getBoundingInfo();
-
-    // 获取包围盒的最小和最大向量
-    const minimum = boundingInfo2.boundingBox.minimumWorld;
-    const maximum = boundingInfo2.boundingBox.maximumWorld;
-
-    // 计算中心点
-    let center2 = BABYLON.Vector3.Center(minimum, maximum);
-
-    console.log("模型中心点:2 ", center2);
-
-
-
-
-    // gsap.to(largeBox.position, {
-    //     x: 10,
-    //     duration: 2,
-    //     // repeat: 1,
-    //     ease: "linear",
-    //     onComplete: (value) => {
-    //         console.log("动画完成:value", value);
-    //         smallBox.parent = null;
-    //         smallBox.position.x = 13;
-    //         gsap.to(largeBox.position, {
-    //             y: 5,
-    //             duration: 2,
-    //             // repeat: 1,
-    //             ease: "linear",
-    //             onComplete: () => {
-    //                 console.log("动画完成");
-    //                 // smallBox.parent = null;
-    //             }
-    //         })
-    //     }
-    // })
-
-
-
-
-
+    gsap.to([largeBox.position, model.position], {
+        z: -20,
+        duration: 5,
+        repeat: -1,
+        ease: "linear",
+        onComplete: (value) => {
+            console.log("动画完成:value", value);
+        }
+    })
 
 })
-
 
 
 </script>
@@ -116,7 +122,7 @@ onMounted(() => {
 <style scoped lang="scss">
 html,
 body,
-#cesiumContainer {
+#container {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -131,10 +137,9 @@ canvas {
 }
 
 
-.btnBox {
+.ant-space {
     position: absolute;
     top: 10px;
     left: 10px;
-    z-index: 999;
 }
 </style>

@@ -68,18 +68,19 @@ export class BaseScene {
     // 初始化灯光
     initLight() {
         // 方向光
-        new BABYLON.DirectionalLight(
+        this.directionalLight = new BABYLON.DirectionalLight(
             "directionalLight",
-            new BABYLON.Vector3(20, 20, 20),
+            new BABYLON.Vector3(0, 20, 0),
             this.scene
         );
-
+        this.directionalLight.intensity = 3;
         // 环境光
-        new BABYLON.HemisphericLight(
+        this.hemisphericLight = new BABYLON.HemisphericLight(
             "hemisphericLight",
-            new BABYLON.Vector3(20, 20, 20),
+            new BABYLON.Vector3(0, 20, 0),
             this.scene
         );
+        this.hemisphericLight.intensity = 2;
     }
 
     // 加载模型 (GLB/GLTF)
@@ -99,29 +100,65 @@ export class BaseScene {
     }
 
     async createModel(params) {
-        const { path, box,
+        const {
+            path,
             position = { x: 0, y: 0, z: 0 },
-            scaling = { x: 0, y: 0, z: 0 },
-            rotation = { x: 0, y: 0, z: 0 }
-        } = params
-        await new BABYLON.AppendSceneAsync(path, this.scene, {
+            scaling = { x: 1, y: 1, z: 1 },
+            rotation = { x: 0, y: 0, z: 0 },
+        } = params;
+        const scene = this.scene
+        const container = await BABYLON.LoadAssetContainerAsync(path, scene, {
             onProgress(event) {
                 console.log(event.loaded, event.total, event.lengthComputable)
             },
         });
-
-        const mesh = this.scene.getMeshById('BoomBox')
+        const mesh = container.meshes[container.meshes.length - 1];
         if (mesh) {
-            mesh.scaling = new BABYLON.Vector3(scaling?.x, scaling?.y, scaling?.z);
-            mesh.rotation = new BABYLON.Vector3(rotation?.x, rotation?.y, rotation?.z);
-            mesh.position = new BABYLON.Vector3(position?.x, position?.y, position?.z)
-
+            mesh.scaling = new BABYLON.Vector3(scaling.x, scaling.y, scaling.z);
+            mesh.rotation = new BABYLON.Vector3(rotation.x, rotation.y, rotation.z);
+            mesh.position = new BABYLON.Vector3(position.x, position.y, position.z)
+            mesh.isPickable = true
+            mesh.computeWorldMatrix(true); // ← 强制更新世界矩阵
         }
+        // 4. 添加到场景并刷新
+        container.addAllToScene();
+        scene.onReadyObservable.addOnce(() => {
+            scene.meshes.forEach(m => m.computeWorldMatrix(true));
+        });
+        return { id: mesh.id }
 
-        return mesh
     }
 
 
+
+    // public async create(params: Create) {
+    //     const {
+    //         path,
+    //         position = { x: 0, y: 0, z: 0 },
+    //         scaling = { x: 1, y: 1, z: 1 },
+    //         rotation = { x: 0, y: 0, z: 0 },
+    //     } = params;
+    //     const scene = this.scene
+    //     const container = await LoadAssetContainerAsync(path, scene, {
+    //         onProgress(event) {
+    //             console.log(event.loaded, event.total, event.lengthComputable)
+    //         },
+    //     });
+    //     const mesh: AbstractMesh = container.meshes[container.meshes.length - 1] as AbstractMesh;
+    //     if (mesh) {
+    //         mesh.scaling = new Vector3(scaling.x, scaling.y, scaling.z);
+    //         mesh.rotation = new Vector3(rotation.x, rotation.y, rotation.z);
+    //         mesh.position = new Vector3(position.x, position.y, position.z)
+    //         mesh.isPickable = true
+    //         mesh.computeWorldMatrix(true); // ← 强制更新世界矩阵
+    //     }
+    //     // 4. 添加到场景并刷新
+    //     container.addAllToScene();
+    //     scene.onReadyObservable.addOnce(() => {
+    //         scene.meshes.forEach(m => m.computeWorldMatrix(true));
+    //     });
+    //     return { id: mesh.id }
+    // }
 
 
 

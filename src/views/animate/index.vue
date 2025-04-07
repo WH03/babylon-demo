@@ -14,8 +14,6 @@ import gsap from "gsap";
 let canvasRef = ref(null)
 let baseScene;
 // 配置参数
-// const modelUrl = '/models/testModel.glb';
-// const modelUrl = '/models/tray.glb';
 const modelUrl = '/models/BoomBox.glb';
 const initOptions = {
     cameraParams: {
