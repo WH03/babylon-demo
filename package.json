@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
-    "@babylonjs/core": "^7.54.2",
+    "@babylonjs/core": "^7.54.3",
     "@babylonjs/loaders": "^7.54.2",
     "ant-design-vue": "^4.2.5",
     "babylonjs": "^7.53.3",

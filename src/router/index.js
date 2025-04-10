@@ -28,6 +28,11 @@ const routes = [
     name: "getConter",
     meta: { title: "中心点" },
     component: () => import("../views/getConter/index.vue"),
+  }, {
+    path: "/texture",
+    name: "texture",
+    meta: { title: "纹理贴图" },
+    component: () => import("../views/texture/index.vue"),
   },
 
 ];

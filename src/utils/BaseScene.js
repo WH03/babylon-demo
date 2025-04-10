@@ -3,8 +3,8 @@ import "babylonjs-loaders";
 
 export class BaseScene {
     constructor(canvasElement, options = {}) {
-        // this.canvas = canvasElement;
-        this.canvas = document.querySelector(canvasElement);
+        this.canvas = canvasElement;
+        // this.canvas = document.querySelector(canvasElement);
         this.options = {
             enableCamera: true,
             enableLight: true,
@@ -48,7 +48,7 @@ export class BaseScene {
 
     // 初始化相机
     initCamera() {
-        const { alpha, beta, radius, target } = this.options?.cameraParams;
+        const { alpha, beta, radius, target, wheelPrecision } = this.options?.cameraParams;
         // console.log("alpha", alpha, beta, radius, target);
         this.camera = new BABYLON.ArcRotateCamera(
             "mainCamera",
@@ -58,6 +58,8 @@ export class BaseScene {
             target,
             this.scene
         );
+        // console.log("this.camera", wheelPrecision);
+        this.camera.wheelPrecision = wheelPrecision || 50; // 默认是 50，数值越大，缩放越慢
         this.camera.attachControl(this.canvas, true);
     }
 
