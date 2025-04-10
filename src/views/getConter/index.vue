@@ -53,7 +53,7 @@ const unGroup = () => {
 
 onMounted(async () => {
     baseScene = new BaseScene(canvasRef.value, initOptions);
-    // baseScene.initAxesHelper();
+    baseScene.initAxesHelper();
 
     // 创建一个材质
     const yellowMaterial = new BABYLON.StandardMaterial('material', baseScene.scene)
@@ -64,7 +64,7 @@ onMounted(async () => {
     let trayModel = await baseScene.createModel({
         path: modelUrl,
         // scaling: { x: 12, y: 12, z: 12 },
-        position: { x: 0, y: 2, z: 2 },
+        position: { x: -1, y: 0, z: 0 },
     })
 
     // console.log('@@@trayModel:', trayModel);
@@ -96,76 +96,6 @@ onMounted(async () => {
 
 
 
-    // // 假设大模型的尺寸和位置已确定，原点为 (0, 0, 0)
-    // // 设定间距
-    // const spacing = 0.15;  // 你可以根据实际情况调整
-
-    // // 小模型的摆放位置数组
-    // const positions = [];
-
-    // for (let row = 0; row < 4; row++) {  // 4排
-    //     for (let col = 0; col < 3; col++) {  // 每排3个
-    //         // 计算每个小模型的坐标
-    //         const x = (col - 1) * spacing;  // 水平偏移：3个模型，-1, 0, 1 使得它们在x轴对称
-    //         const y = 0  // 垂直偏移：4排，-1.5, -0.5, 0.5, 1.5使得它们在y轴对称
-    //         const z = (row - 1.5) * spacing;  // 所有模型的z坐标在原点
-
-    //         positions.push(new BABYLON.Vector3(x, y, z));  // 将位置保存为BABYLON的Vector3对象
-    //     }
-    // }
-
-    // // 输出所有小模型的坐标
-    // positions.forEach((pos, index) => {
-    //     console.log(`小模型 ${index + 1} 的位置:`, pos);
-
-    //     let meter = baseScene.createModel({
-    //         path: threePhaseMeter,
-    //         scaling: { x: 0.4, y: 0.4, z: 0.4 },
-    //         rotation: { x: 0, y: Math.PI / 2, z: 0 },
-    //         position: pos,
-    //     })
-    // });
-    // const spacing = 0.15;  // 小模型之间的间距
-    // const positions = [];   // 存储所有小模型位置的数组
-
-    // for (let row = 0; row < 4; row++) {  // 4排
-    //     for (let col = 0; col < 3; col++) {  // 每排3个
-    //         // 计算每个小模型的相对位置
-    //         const x = (col - 1) * spacing;  // 水平偏移：-1, 0, 1
-    //         const y = 0;                    // 垂直偏移：所有小模型在同一平面
-    //         const z = (row - 1.5) * spacing; // 深度偏移：-1.5, -0.5, 0.5, 1.5
-
-    //         // 根据大模型的位置偏移小模型的坐标
-    //         const modelX = trayModelPos.x + x;  // 小模型的 X 坐标
-    //         const modelY = trayModelPos.y + y;  // 小模型的 Y 坐标
-    //         const modelZ = trayModelPos.z + z;  // 小模型的 Z 坐标
-
-    //         // 将计算出的坐标添加到位置数组
-    //         positions.push(new BABYLON.Vector3(modelX, modelY, modelZ));
-    //     }
-    // }
-
-    // let obj = {
-    //     "dataType": "box",
-    //     "start": "210119002000000144629",
-    //     "end": "210119002000000144629",
-    //     "meterDirection": 3,
-    //     "moveDirection": 0,
-    //     "endAssetNum": 0,
-    //     "time": 0,
-    //     "assetID": null,
-    //     "assetList": [
-    //         "",
-    //         "",
-    //         "3530009000191022140207",
-    //         "3530009000191022140206"
-    //     ],
-    //     "assetType": 2
-    // }
-
-    // // 根据assetList.length创建相应数量的模型，并设置其位置，然后添加到场景中。在该数据中，assetList包含两个空元素和两个非空元素，因此会创建两个模型，并把前两个空元素的位置空出来。
-
-
     let obj = {
         dataType: "box",
         start: "210119002000000144629",
@@ -186,22 +116,32 @@ onMounted(async () => {
 
     const spacing = 0.28;  // 小模型之间的间距
     const positions = [];   // 存储所有小模型位置的数组
-    for (let row = 0; row < 2; row++) { // 2 行
-        for (let col = 0; col < 2; col++) { // 每行 2 个模型
-            // 计算每个小模型的相对位置
-            const x = (col - 0.5) * spacing;  // X 轴偏移：-0.5, 0.5 使它们对称
-            const y = 0;                    // 垂直偏移：所有小模型在同一平面
-            const z = (row - 0.5) * spacing;  // Z 轴偏移：-0.5, 0.5 使它们对称
+    for (let row = 0; row < obj.assetList.length / 2; row++) { // 2 行
+        for (let col = 0; col < obj.assetList.length / 2; col++) { // 每行 2 个模型
+            // console.log("row", row);
+            // console.log("col", col);
 
-            // 根据大模型的位置偏移小模型的坐标
-            const modelX = trayModelPos.x + x;  // 小模型的 X 坐标
-            const modelY = trayModelPos.y + y;  // 小模型的 Y 坐标
-            const modelZ = trayModelPos.z + z;  // 小模型的 Z 坐标
+            const x = trayModelPos.x - (trayModelBoundingBoxInfo.width / 2) * col
+            // console.log("x", x);
+            const y = 0;
+            const z = trayModelPos.z - (trayModelBoundingBoxInfo.depth / 2) * row
+            // const x = (col - 0.5) * spacing;  // X 轴偏移：-0.5, 0.5 使它们对称
+            // 计算每个小模型的相对位置
+            // const x = (col - 0.5) * spacing;  // X 轴偏移：-0.5, 0.5 使它们对称
+            // const y = 0;                    // 垂直偏移：所有小模型在同一平面
+            // const z = (row - 0.5) * spacing;  // Z 轴偏移：-0.5, 0.5 使它们对称
+
+            // // 根据大模型的位置偏移小模型的坐标
+            // const modelX = trayModelPos.x + x;  // 小模型的 X 坐标
+            // const modelY = trayModelPos.y + y;  // 小模型的 Y 坐标
+            // const modelZ = trayModelPos.z + z;  // 小模型的 Z 坐标
 
             // 将计算出的坐标添加到位置数组
-            positions.push(new BABYLON.Vector3(modelX, modelY, modelZ));
+            // positions.push(new BABYLON.Vector3(modelX, modelY, modelZ));
+            positions.push(new BABYLON.Vector3(x, y, z));
         }
     }
+    console.log("positions", positions);
 
 
     // 输出每个小模型的位置
