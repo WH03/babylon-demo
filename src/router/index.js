@@ -33,6 +33,11 @@ const routes = [
     name: "texture",
     meta: { title: "纹理贴图" },
     component: () => import("../views/texture/index.vue"),
+  }, {
+    path: "/modelList",
+    name: "modelList",
+    meta: { title: "模型列表" },
+    component: () => import("../views/modelList/index.vue"),
   },
 
 ];
