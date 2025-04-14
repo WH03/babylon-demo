@@ -9,22 +9,21 @@ import { onMounted, ref, onUnmounted } from 'vue'
 import { BaseScene } from '@/utils/BaseScene.js';
 import { HighlightManager } from '@/utils/highlightManager'
 import * as BABYLON from "babylonjs";
+import { Vector3, MeshBuilder } from '@babylonjs/core';
 import gsap from "gsap";
 
 let canvasRef = ref(null)
 let baseScene;
 // 配置参数
 const modelUrl = '/models/BoomBox.glb';
+
 const initOptions = {
     cameraParams: {
         alpha: 0, // 相机绕y轴旋转角度
         beta: Math.PI / 4, // 相机绕x轴旋转角度
         radius: 60, // 自定义相机距离
     },
-
 };
-
-
 
 /* 
 todo：
@@ -53,12 +52,17 @@ const addBoxAnimation = (mesh) => {
     baseScene.scene.beginAnimation(mesh, 0, 200, true);
 };
 
+/* 
+    04-14：
+        1、辊筒到暂存台
+*/
+
 // 求距离
 // let dictance = +startVec3.subtract(endVec3).length().toFixed(2)
 // console.log('@@@dictance', dictance)
 
 onMounted(async () => {
-    baseScene = new BaseScene('.canvas', initOptions);
+    baseScene = new BaseScene(canvasRef.value, initOptions);
     baseScene.initAxesHelper();
 
     // 方式一：调用 add 进行监听
@@ -156,15 +160,26 @@ onMounted(async () => {
     // animationGrounp.play(true)
 
 
-    // 创建一个球体
-    let sphere = new BABYLON.MeshBuilder.CreateBox("box", { width: 5, height: 3, depth: 2 }, baseScene.scene);
+    // // 创建一个球体
+    // let sphere = new BABYLON.MeshBuilder.CreateBox("box", { width: 5, height: 3, depth: 2 }, baseScene.scene);
 
-    // 注册一个在每次渲染前执行的函数
-    baseScene.scene.registerBeforeRender(function () {
-        // 这里写你的代码，例如更新球体的位置
-        // Math.sin():它接受一个以弧度为单位的数字作为参数，返回该角度的正弦值，结果范围在 -1 到 1 之间。
-        sphere.position.z = Math.sin(Date.now() * 0.001) * 5; // 使球体在Y轴上上下移动
-    });
+    // // 注册一个在每次渲染前执行的函数
+    // baseScene.scene.registerBeforeRender(function () {
+    //     // 这里写你的代码，例如更新球体的位置
+    //     // Math.sin():它接受一个以弧度为单位的数字作为参数，返回该角度的正弦值，结果范围在 -1 到 1 之间。
+    //     sphere.position.z = Math.sin(Date.now() * 0.001) * 5; // 使球体在Y轴上上下移动
+    // });
+
+    // 创建一个材质
+    const yellowMaterial = new BABYLON.StandardMaterial('material', baseScene.scene)
+    yellowMaterial.diffuseColor = new BABYLON.Color3(1, 1, 0)
+
+    const baseCylinder = new MeshBuilder.CreateCylinder('baseCylinder', { height: 5, diameter: 1 }, baseScene.scene)
+    const topCylinder = new MeshBuilder.CreateCylinder('topCylinder', { height: 5, diameter: 1 }, baseScene.scene)
+    topCylinder.material = yellowMaterial
+    topCylinder.rotation = new Vector3(Math.PI / 3, 0, 0)
+    topCylinder.position = new Vector3(0, 3, 2.5)
+
 
 })
 

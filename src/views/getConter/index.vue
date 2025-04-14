@@ -11,7 +11,6 @@ import { BaseScene } from '@/utils/BaseScene.js';
 import * as BABYLON from 'babylonjs'
 import { Vector3 } from '@babylonjs/core';
 import meshBoundingBoxInfo from '@/utils/MeshBoundingBox'//获取模型尺寸包围盒
-import gsap from "gsap";
 
 let baseScene;
 let canvasRef = ref(null);
@@ -24,7 +23,6 @@ const initOptions = {
         radius: 10, // 自定义相机距离
     },
 };
-let smallBox, largeBox, model;
 
 
 
@@ -36,11 +34,13 @@ onMounted(async () => {
     const yellowMaterial = new BABYLON.StandardMaterial('material', baseScene.scene)
     yellowMaterial.diffuseColor = new BABYLON.Color3(1, 1, 0)
 
+    let ratation = -Math.PI / 2
+    // let ratation = 0
 
 
     let trayModel = await baseScene.createModel({
         path: modelUrl,
-        rotation: { x: 0, y: Math.PI / 2, z: 0 },
+        rotation: { x: 0, y: ratation, z: 0 },
         position: { x: -1, y: 0, z: 1 },
     })
 
@@ -63,6 +63,8 @@ onMounted(async () => {
         assetID: null,
 
         assetList: [
+            // "3530009000191022140206",
+            // "3530009000191022140207",
             "",
             "",
             "3530009000191022140206",
@@ -82,12 +84,10 @@ onMounted(async () => {
         trayModelPos,
         modelSize,
         spacing: 0.05,
-        rotation: Math.PI / 2  // 90度旋转
-        // rotation: 0  //
+        // rotation: Math.PI / 2  // 90度旋转
+        rotation: ratation
     }
     let positions = putMeterPos(meterParams)
-
-
 
 
 
@@ -98,6 +98,7 @@ onMounted(async () => {
             let meter = baseScene.createModel({
                 path: threePhaseMeter,
                 // rotation: { x: 0, y: Math.PI / 2, z: 0 },
+                rotation: { x: 0, y: 0, z: 0 },
                 position: positions[index],
             });
         }
