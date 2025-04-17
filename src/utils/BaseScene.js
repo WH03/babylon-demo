@@ -103,13 +103,14 @@ export class BaseScene {
 
     async createModel(params) {
         const {
+            // name,
             path,
             position = { x: 0, y: 0, z: 0 },
             scaling = { x: 1, y: 1, z: 1 },
             rotation = { x: 0, y: 0, z: 0 },
         } = params;
         const scene = this.scene
-        const container = await BABYLON.LoadAssetContainerAsync(path, scene, {
+        const container = await BABYLON.LoadAssetContainerAsync( path, scene, {
             onProgress(event) {
                 console.log(event.loaded, event.total, event.lengthComputable)
             },
