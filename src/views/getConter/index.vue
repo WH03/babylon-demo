@@ -128,7 +128,7 @@ onMounted(async () => {
     };
 
     // 假设每个小模型的尺寸
-    const totalModels = obj.assetList5.length;  // 三相表模型数量
+    const totalModels = obj.assetList.length;  // 三相表模型数量
     // const totalModels = obj.assetList2.length;  // 单相表模型数量
     let meterParams = {
         totalModels,
