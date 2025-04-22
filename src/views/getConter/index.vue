@@ -115,7 +115,6 @@ onMounted(async () => {
     // };
 
     const modelSize = {
-
         width: 0.112,
         height: 0.073,
         depth: 0.16,
@@ -141,9 +140,8 @@ onMounted(async () => {
     }
     let positions = putMeterPos(meterParams)
 
-    let arr = obj.assetList3.slice().reverse()
+    let arr = obj.assetList.slice().reverse()
     // let arr = obj.assetList2.slice().reverse()
-
     let phaseRotation = { x: 0, y: getRotationAngle(obj.meterDirection), z: 0 };// 电表方向
     // console.log('@@@phaseRotation:模型方向：', phaseRotation)
 
