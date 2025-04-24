@@ -113,6 +113,11 @@ onMounted(async () => {
     //     height: 0.096,
     //     depth: 0.26,
     // };
+    // let DT5_6  = ['B_DT53','B_DT54','B_DT55','B_DT56','B_DT57','B_DT58','B_DT59','B_DT60','B_DT61','B_DT62','B_DT63','B_DT64'];
+
+    // let DT6_8 = ['B_DT65', 'B_DT66', 'B_DT67', 'B_DT68', 'B_DT69', 'B_DT70', 'B_DT71', 'B_DT72', 'B_DT73', 'B_DT74', 'B_DT75', 'B_DT76','B_DT77', 'B_DT78', 'B_DT79', 'B_DT80', 'B_DT81', 'B_DT82','B_DT83', 'B_DT84', 'B_DT85', 'B_DT86',]
+
+
 
     const modelSize = {
         width: 0.112,
@@ -131,7 +136,7 @@ onMounted(async () => {
     // const totalModels = obj.assetList2.length;  // 单相表模型数量
     let meterParams = {
         totalModels,
-        containerModelPos:trayModelPos,
+        containerModelPos: trayModelPos,
         // modelSize,
         phaseMesh,
         spacing: 0,
