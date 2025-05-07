@@ -109,7 +109,7 @@ onMounted(async () => {
 
     // try {
     // 初始化 Babylon
-    baseScene = new BaseScene('.canvas', initOptions);
+    baseScene = new BaseScene(canvasRef.value, initOptions);
     // baseScene.scene.useRightHandedSystem = true;
     // baseScene.scene.useLeftHandedSystem = true;
     baseScene.initAxesHelper();
@@ -149,7 +149,9 @@ onMounted(async () => {
     const originalModel = baseScene.scene.getMeshById('BoomBox')
 
 
-    groupParent = new BABYLON.TransformNode("modelGroup", baseScene.scene);
+    // groupParent = new BABYLON.TransformNode("modelGroup", baseScene.scene);
+    groupParent = new BABYLON.TransformNode("modelGroup");
+    groupParent.position = new BABYLON.Vector3(3, 5, 3);
     // groupParent.rotation = new BABYLON.Vector3(0, 0, 0); // 强制重置旋转
     // groupParent.scaling = new BABYLON.Vector3(1, 1, 1);  // 确保无缩放
     // groupParent.translate((0, 0, 0),); // 确保无平移
@@ -167,7 +169,7 @@ onMounted(async () => {
     clonedBox1.material = redMaterial;
     clonedBox1.parent = groupParent;
     clonedBox1.translate(new BABYLON.Vector3(0, 0, 0), 1,
-     BABYLON.Space.WORLD); //(-1 + 2, 2 + 3, 1 + 4) = (1, 5, 5)
+        BABYLON.Space.WORLD); //(-1 + 2, 2 + 3, 1 + 4) = (1, 5, 5)
 
 
     sphere.parent = groupParent;
@@ -201,11 +203,11 @@ onMounted(async () => {
     localAxes2.yAxis.parent = clonedBox2;
     localAxes2.zAxis.parent = clonedBox2;
 
-    gsap.to([box1.position, originalModel.position, clonedBox2.position, groupParent.position], {
-        x: 15, // 移动位置
-        repeat: -1, // 重复次数
-        duration: 5, // 动画持续时间
-    });
+    // gsap.to([ groupParent.position], {
+    //     x: 15, // 移动位置
+    //     repeat: -1, // 重复次数
+    //     duration: 5, // 动画持续时间
+    // });
 
 
     // groupParent.rotation.y =Math.PI/2; // 继承旋转
@@ -250,27 +252,27 @@ onMounted(async () => {
     // });
 
 
-    //     let animationBox = new BABYLON.Animation("myAnimation", "position.x", 50, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-    // // 定义动画的关键帧
-    // // let animationBox2 = new BABYLON.Animation("myAnimation2", "scaling.x", 50, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-    //     let keys = [];
-    //     // 在动画key==0时, 动画的初始值是"1"
-    //     keys.push({
-    //         frame: 0,
-    //         value: 1
-    //     });
-    //     // 在动画key==100时, 动画的值是"10"
-    //     keys.push({
-    //         frame: 100,
-    //         value: 10
-    //     });
-    //     keys.push({
-    //         frame: 200,
-    //         value: 1
-    //     });
-    //     animationBox.setKeys(keys);//把之前定义的keys动画组加入到Animation对象中
-    //     groupParent.animations.push(animationBox);//把动画和物体关联起来
-    //     baseScene.scene.beginAnimation(groupParent, 0, 100, true);// 最后，我们需要一行代码来启动自己的动画：
+    let animationBox = new BABYLON.Animation("myAnimation", "position.x", 50, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    // 定义动画的关键帧
+    // let animationBox2 = new BABYLON.Animation("myAnimation2", "scaling.x", 50, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    let keys = [];
+    // 在动画key==0时, 动画的初始值是"1"
+    keys.push({
+        frame: 0,
+        value: 1
+    });
+    // 在动画key==100时, 动画的值是"10"
+    keys.push({
+        frame: 100,
+        value: 10
+    });
+    keys.push({
+        frame: 200,
+        value: 1
+    });
+    animationBox.setKeys(keys);//把之前定义的keys动画组加入到Animation对象中
+    groupParent.animations.push(animationBox);//把动画和物体关联起来
+    baseScene.scene.beginAnimation(groupParent, 0, 100, true);// 最后，我们需要一行代码来启动自己的动画：
 
 
     //     trayModel.animations.push(animationBox);//把动画和物体关联起来
