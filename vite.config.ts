@@ -21,7 +21,7 @@ export default defineConfig({
   //修改启动的
   server: {
     host: '0.0.0.0', // 这个用于启动
-    port: 8080, // 指定启动端口
+    port: 8060, // 指定启动端口
     open: true //启动后是否自动打开浏览器
   },
   // 设置scss的api类型为modern-compiler

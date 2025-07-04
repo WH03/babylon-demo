@@ -1,12 +1,7 @@
 <template>
     <div id="container">
         <canvas ref="canvasRef" class="canvas">
-
         </canvas>
-        <!-- <a-space>
-            <a-button type="primary" @click="goGroup">分组</a-button>
-            <a-button type="primary" @click="unGroup">解组</a-button>
-        </a-space> -->
     </div>
 </template>
 
@@ -26,9 +21,7 @@ type ThreeDimensional = {
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 
-
 let baseScene: BaseScene;
-const modelUrl2 = '/models/tray.glb'; // 模型地址
 const initOptions = {
     cameraParams: {
         alpha: 0, // 相机绕y轴旋转角度
@@ -48,35 +41,39 @@ const createTexture = (texturl: string) => {
     return textureMat;
 }
 
-// 创建立方体
+// // 创建立方体
+// const createMeter = (name: string, position: ThreeDimensional, z: number, rotation: number, textureMat: Material) => {
+//     let box = MeshBuilder.CreateBox(`model${name}`, { width: 2, height: 2, depth: 2 }, baseScene.scene);
+//     box.rotation.y = rotation * Math.PI / 180;
+//     box.position = new Vector3(position.x, position.y, z);
+//     box.material = textureMat;
+//     return box;
+// }
+
 const createMeter = (name: string, position: ThreeDimensional, z: number, rotation: number, textureMat: Material) => {
-    let box = MeshBuilder.CreateBox(`model${name}`, { width: 2, height: 2, depth: 2 }, baseScene.scene);
+    const faceUV = new Array(6).fill(new BABYLON.Vector4(0, 0, 0, 0)); // 初始化所有面的 UV 坐标为 (0, 0, 0, 0)
+    faceUV[4] = new BABYLON.Vector4(0, 0, 1, 1); // 设置顶面（索引为 4）的 UV 坐标为 (0, 0, 1, 1)
+
+    const box = BABYLON.MeshBuilder.CreateBox(`model${name}`, {
+        width: 2,
+        height: 2,
+        depth: 2,
+        faceUV: faceUV
+    }, baseScene.scene);
+
     box.rotation.y = rotation * Math.PI / 180;
-    box.position = new Vector3(position.x, position.y, z);
+    box.position = new BABYLON.Vector3(position.x, position.y, z);
     box.material = textureMat;
+    console.log('box', box);
     return box;
-
-}
-
+};
 
 
-
-// let meterBox = MeshBuilder.CreateBox("skyBox", { width: 1, height: 1, depth: 1 }, baseScene.scene);
-// let cubeTextureMaterial = new StandardMaterial("skyBox", baseScene.scene);
-// meterBox.position = new Vector3(0, 0, 0)
-
-// cubeTextureMaterial.reflectionTexture = new CubeTexture("texture/cubeTexture2/", baseScene.scene);
-
-
-// cubeTextureMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
-// cubeTextureMaterial.disableLighting = true;
-// meterBox.material = cubeTextureMaterial;
 
 let meterDirection: number = 2;
 let startPos: ThreeDimensional = { x: 0, y: 0, z: 0 };
 let z: number = 0;
 let rotation: number = 0;
-
 /**
  * 根据电表方向获取旋转角度
  * @param {number} meterDirection - 电表方向，取值范围为 0 至 3。
@@ -101,28 +98,11 @@ function getRotationAngle(meterDirection: number): number {
 
 onMounted(async () => {
     baseScene = new BaseScene(canvasRef.value, initOptions);
-    // baseScene.initAxesHelper();
-
 
     let textureMat = createTexture(textUrl.value);
-    // switch (meterDirection) {//电表方向
-    //     case 0:
-    //         rotation = 180;
-    //         break;
-    //     case 1:
-    //         rotation = 270;
-    //         break;
-    //     case 2:
-    //         rotation = 0;
-    //         break;
-    //     case 3:
-    //         rotation = 90;
-    //         break;
-    // }
 
     rotation = getRotationAngle(meterDirection);// 电表方向
     createMeter('box', startPos, z, rotation, textureMat)!;
-
 
 })
 

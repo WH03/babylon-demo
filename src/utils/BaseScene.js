@@ -1,5 +1,5 @@
-import * as BABYLON from "babylonjs";
-import "babylonjs-loaders";
+// import * as BABYLON from "babylonjs";
+import { Engine, Scene, ArcRotateCamera, Vector3, Mesh, TransformNode, StandardMaterial, Color3, AbstractMesh, DirectionalLight, HemisphericLight, AxesViewer } from "babylonjs";
 
 export class BaseScene {
     constructor(canvasElement, options = {}) {
@@ -12,7 +12,7 @@ export class BaseScene {
                 alpha: 0,
                 beta: Math.PI / 4,
                 radius: 60,
-                target: BABYLON.Vector3.Zero(),
+                target: Vector3.Zero(),
             },
             ...options,
         };
@@ -36,12 +36,12 @@ export class BaseScene {
 
     // 初始化引擎
     initEngine() {
-        this.engine = new BABYLON.Engine(this.canvas, true);
+        this.engine = new Engine(this.canvas, true);
     }
 
     // 初始化场景
     initScene() {
-        this.scene = new BABYLON.Scene(this.engine);
+        this.scene = new Scene(this.engine);
 
         // this.scene.clearColor = new BABYLON.Color4(0.3, 0.3, 0.3, 1); // 默认背景色
     }
@@ -50,7 +50,7 @@ export class BaseScene {
     initCamera() {
         const { alpha, beta, radius, target, wheelPrecision } = this.options?.cameraParams;
         // console.log("alpha", alpha, beta, radius, target);
-        this.camera = new BABYLON.ArcRotateCamera(
+        this.camera = new ArcRotateCamera(
             "mainCamera",
             alpha,
             beta,
@@ -64,22 +64,22 @@ export class BaseScene {
     }
 
     initAxesHelper() {
-        new BABYLON.AxesViewer(this.scene, 10);
+        new AxesViewer(this.scene, 10);
     }
 
     // 初始化灯光
     initLight() {
         // 方向光
-        this.directionalLight = new BABYLON.DirectionalLight(
+        this.directionalLight = new DirectionalLight(
             "directionalLight",
-            new BABYLON.Vector3(0, 20, 0),
+            new Vector3(0, 20, 0),
             this.scene
         );
         this.directionalLight.intensity = 3;
         // 环境光
-        this.hemisphericLight = new BABYLON.HemisphericLight(
+        this.hemisphericLight = new HemisphericLight(
             "hemisphericLight",
-            new BABYLON.Vector3(0, 20, 0),
+            new Vector3(0, 20, 0),
             this.scene
         );
         this.hemisphericLight.intensity = 2;
@@ -91,7 +91,7 @@ export class BaseScene {
         const rootUrl = modelUrl.substring(0, index + 1);
         const sceneFile = modelUrl.substring(index + 1);
 
-        return BABYLON.SceneLoader.ImportMeshAsync(
+        return SceneLoader.ImportMeshAsync(
             null,
             rootUrl,
             sceneFile,
@@ -110,16 +110,16 @@ export class BaseScene {
             rotation = { x: 0, y: 0, z: 0 },
         } = params;
         const scene = this.scene
-        const container = await BABYLON.LoadAssetContainerAsync( path, scene, {
+        const container = await LoadAssetContainerAsync(path, scene, {
             onProgress(event) {
                 console.log(event.loaded, event.total, event.lengthComputable)
             },
         });
         const mesh = container.meshes[container.meshes.length - 1];
         if (mesh) {
-            mesh.scaling = new BABYLON.Vector3(scaling.x, scaling.y, scaling.z);
-            mesh.rotation = new BABYLON.Vector3(rotation.x, rotation.y, rotation.z);
-            mesh.position = new BABYLON.Vector3(position.x, position.y, position.z)
+            mesh.scaling = new Vector3(scaling.x, scaling.y, scaling.z);
+            mesh.rotation = new Vector3(rotation.x, rotation.y, rotation.z);
+            mesh.position = new Vector3(position.x, position.y, position.z)
             mesh.isPickable = true
             mesh.computeWorldMatrix(true); // ← 强制更新世界矩阵
         }
@@ -132,36 +132,67 @@ export class BaseScene {
 
     }
 
+    /**
+ * 模型移动动画
+ * @param mesh - 需要移动的模型
+ * @param from - 起点 Vector3
+ * @param to - 终点 Vector3
+ * @param duration - 动画时长（毫秒）
+ * @param scene - Babylon.Scene 实例
+ */
+    //   moveAnim(mesh, from, to, duration = 1000, scene) {
+    //     const frameRate = 60
+    //     const totalFrames = (duration / 1000) * frameRate
 
+    //     const animation = new Animation(
+    //       'moveAnimation',
+    //       'position',
+    //       frameRate,
+    //       Animation.ANIMATIONTYPE_VECTOR3,
+    //       Animation.ANIMATIONLOOPMODE_CONSTANT
+    //     )
 
-    // public async create(params: Create) {
-    //     const {
-    //         path,
-    //         position = { x: 0, y: 0, z: 0 },
-    //         scaling = { x: 1, y: 1, z: 1 },
-    //         rotation = { x: 0, y: 0, z: 0 },
-    //     } = params;
-    //     const scene = this.scene
-    //     const container = await LoadAssetContainerAsync(path, scene, {
-    //         onProgress(event) {
-    //             console.log(event.loaded, event.total, event.lengthComputable)
-    //         },
-    //     });
-    //     const mesh: AbstractMesh = container.meshes[container.meshes.length - 1] as AbstractMesh;
-    //     if (mesh) {
-    //         mesh.scaling = new Vector3(scaling.x, scaling.y, scaling.z);
-    //         mesh.rotation = new Vector3(rotation.x, rotation.y, rotation.z);
-    //         mesh.position = new Vector3(position.x, position.y, position.z)
-    //         mesh.isPickable = true
-    //         mesh.computeWorldMatrix(true); // ← 强制更新世界矩阵
-    //     }
-    //     // 4. 添加到场景并刷新
-    //     container.addAllToScene();
-    //     scene.onReadyObservable.addOnce(() => {
-    //         scene.meshes.forEach(m => m.computeWorldMatrix(true));
-    //     });
-    //     return { id: mesh.id }
-    // }
+    //     animation.setKeys([
+    //       { frame: 0, value: from.clone() },
+    //       { frame: totalFrames, value: to.clone() }
+    //     ])
+
+    //     mesh.animations = []
+    //     mesh.animations.push(animation)
+
+    //     scene.beginAnimation(mesh, 0, totalFrames, false)
+    //   }
+
+    moveAnim(mesh, from, to, duration = 1000) {
+        const frameRate = 60
+        const totalFrames = (duration / 1000) * frameRate
+
+        // const animation = new Animation(
+        //     'moveAnimation',
+        //     'position',
+        //     frameRate,
+        //     Animation.ANIMATIONTYPE_VECTOR3,
+        //     Animation.ANIMATIONLOOPMODE_CONSTANT
+        // )
+
+        const animation = new Animation(
+            `${box.id}_positionAnimation`,
+            "position",
+            frameRate,
+            Animation.ANIMATIONTYPE_VECTOR3,
+            Animation.ANIMATIONLOOPMODE_CONSTANT
+        );
+
+        animation.setKeys([
+            { frame: 0, value: from.clone() },
+            { frame: totalFrames, value: to.clone() }
+        ])
+
+        mesh.animations = []
+        mesh.animations.push(animation)
+
+        this.scene.beginAnimation(mesh, 0, totalFrames, false)
+    }
 
 
 

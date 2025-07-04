@@ -94,9 +94,9 @@ onMounted(async () => {
     animation.setEasingFunction(easingFunction);
 
     // 绑定到物体并播放
-    const box = BABYLON.Mesh.CreateBox("box", 1, baseScene.scene);
-    box.animations = [animation];
-    baseScene.scene.beginAnimation(box, 0, 90, false);
+    // const box = BABYLON.Mesh.CreateBox("box", 1, baseScene.scene);
+    // box.animations = [animation];
+    // baseScene.scene.beginAnimation(box, 0, 90, false);
 
     let sphere = new BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 5, segments: 32 }, baseScene.scene);
     sphere.showBoundingBox = true
@@ -104,21 +104,6 @@ onMounted(async () => {
 
 
 
-    const moveModel = () => {
-        const animation = new BABYLON.Animation("myAnimation",
-            "position",
-            30,
-            BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
-            BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-
-        animation.setKeys([
-            { frame: 0, value: start },
-            { frame: 100, value: end }
-        ])
-
-        box.animations.push(animation);
-
-    }
 
 
 
@@ -164,11 +149,11 @@ onMounted(async () => {
     //scene.beginDirectAnimation(box,[rotation,up],0,4*framerate,true)
     // 旋转
 
-    var animationGrounp = new BABYLON.AnimationGroup('group')
-    animationGrounp.addTargetedAnimation(up, box)
-    // animationGrounp.addTargetedAnimation(rotation, box)
-    animationGrounp.normalize(0, 40)
-    animationGrounp.play(true)
+    // var animationGrounp = new BABYLON.AnimationGroup('group')
+    // animationGrounp.addTargetedAnimation(up, box)
+    // // animationGrounp.addTargetedAnimation(rotation, box)
+    // animationGrounp.normalize(0, 40)
+    // animationGrounp.play(true)
 
     // // 创建一个球体
     // let sphere = new BABYLON.MeshBuilder.CreateBox("box", { width: 5, height: 3, depth: 2 }, baseScene.scene);
@@ -181,14 +166,14 @@ onMounted(async () => {
     });
 
     // 创建一个材质
-    const yellowMaterial = new BABYLON.StandardMaterial('material', baseScene.scene)
-    yellowMaterial.diffuseColor = new BABYLON.Color3(1, 1, 0)
+    // const yellowMaterial = new BABYLON.StandardMaterial('material', baseScene.scene)
+    // yellowMaterial.diffuseColor = new BABYLON.Color3(1, 1, 0)
 
-    const baseCylinder = new MeshBuilder.CreateCylinder('baseCylinder', { height: 5, diameter: 1 }, baseScene.scene)
-    const topCylinder = new MeshBuilder.CreateCylinder('topCylinder', { height: 5, diameter: 1 }, baseScene.scene)
-    topCylinder.material = yellowMaterial
-    topCylinder.rotation = new Vector3(Math.PI / 3, 0, 0)
-    topCylinder.position = new Vector3(0, 3, 2.5)
+    // const baseCylinder = new MeshBuilder.CreateCylinder('baseCylinder', { height: 5, diameter: 1 }, baseScene.scene)
+    // const topCylinder = new MeshBuilder.CreateCylinder('topCylinder', { height: 5, diameter: 1 }, baseScene.scene)
+    // topCylinder.material = yellowMaterial
+    // topCylinder.rotation = new Vector3(Math.PI / 3, 0, 0)
+    // topCylinder.position = new Vector3(0, 3, 2.5)
 
 
 })

@@ -39,7 +39,23 @@ const routes = [
     meta: { title: "模型列表" },
     component: () => import("../views/modelList/index.vue"),
   },
-
+  {
+    path: "/test",
+    name: "test",
+    meta: { title: "测试" },
+    component: () => import("../views/test/index.vue"),
+  }, {
+    path: "/video",
+    name: "video",
+    meta: { title: "视频" },
+    component: () => import("../views/video/index.vue"),
+  },
+  {
+    path: "/3dhtml",
+    name: "3dhtml",
+    meta: { title: "创建3dhtml" },
+    component: () => import("../views/create3Dhtml/index.vue"),
+  },
 ];
 
 const router = createRouter({

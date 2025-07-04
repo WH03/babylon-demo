@@ -280,9 +280,9 @@ onMounted(async () => {
 
 
     // 初始化高亮管理器
-    // new HighlightManager(baseScene.scene, {
-    //     color: BABYLON.Color3.Green(),
-    // });
+    new HighlightManager(baseScene.scene, {
+        color: BABYLON.Color3.Green(),
+    });
 
 })
 
