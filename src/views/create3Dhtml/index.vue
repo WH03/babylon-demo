@@ -8,7 +8,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { BaseScene } from '@/utils/BaseScene.js';
-import { Vector3, MeshBuilder, Animation, TransformNode } from "babylonjs";
+import { Vector3, MeshBuilder, Animation, TransformNode, Color4 } from "babylonjs";
 import { HtmlMeshRenderer, HtmlMesh } from "babylonjs-addons"
 
 
@@ -44,9 +44,12 @@ function createHtmlMeshFromTemplate(htmlContent, cssText, width = 4, height = 3,
     style.textContent = cssText
     container.prepend(style)
     htmlMesh.setContent(container, width, height);
+    htmlMesh.material.diffuseColor = new Color4.FromHexString('#0f1f42');
+
     htmlMesh.position = position;
     // ✅ 关键：始终面向摄像机
     htmlMesh.billboardMode = TransformNode.BILLBOARDMODE_ALL;
+    console.log('@@htmlMesh:这是啥', htmlMesh.material)
     return htmlMesh;
 }
 
