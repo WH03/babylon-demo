@@ -1,5 +1,5 @@
 // import * as BABYLON from "babylonjs";
-import { Engine, Scene, ArcRotateCamera, Vector3, Mesh, TransformNode, StandardMaterial, Color3, AbstractMesh, DirectionalLight, HemisphericLight, AxesViewer } from "babylonjs";
+import { Engine, Scene, ArcRotateCamera, Vector3, Mesh, TransformNode, StandardMaterial, Color3, AbstractMesh, DirectionalLight, HemisphericLight, AxesViewer, Animation } from "babylonjs";
 
 export class BaseScene {
     constructor(canvasElement, options = {}) {
@@ -176,7 +176,7 @@ export class BaseScene {
         // )
 
         const animation = new Animation(
-            `${box.id}_positionAnimation`,
+            `${mesh.id}_positionAnimation`,
             "position",
             frameRate,
             Animation.ANIMATIONTYPE_VECTOR3,
@@ -203,7 +203,7 @@ export class BaseScene {
 
     // 启动渲染循环
     startRenderLoop() {
-        this.engine.runRenderLoop(() => this.scene.render());
+        this.engine.runRenderLoop(() => this.scene?.render());
     }
 
 

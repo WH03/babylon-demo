@@ -20,5 +20,6 @@ declare module 'vue' {
     ASubMenu: typeof import('ant-design-vue/es')['SubMenu']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Show3DUI: typeof import('./src/components/Show3DUI/index.vue')['default']
   }
 }
