@@ -56,6 +56,12 @@ const routes = [
     meta: { title: "创建3dhtml" },
     component: () => import("../views/create3Dhtml/index.vue"),
   },
+  {
+    path: "/glow",
+    name: "glow",
+    meta: { title: "辉光效果" },
+    component: () => import("../views/glow/index.vue"),
+  },
 ];
 
 const router = createRouter({

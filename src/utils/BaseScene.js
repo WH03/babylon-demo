@@ -42,7 +42,6 @@ export class BaseScene {
     // 初始化场景
     initScene() {
         this.scene = new Scene(this.engine);
-
         // this.scene.clearColor = new BABYLON.Color4(0.3, 0.3, 0.3, 1); // 默认背景色
     }
 
