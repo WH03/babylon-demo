@@ -8,7 +8,7 @@
 <script setup>
 import { onMounted, ref, nextTick } from 'vue'
 import { BaseScene } from '@/utils/BaseScene.js';
-import { Vector3, MeshBuilder, Animation, TransformNode, Color3, StandardMaterial } from "babylonjs";
+import { Vector3, MeshBuilder, Animation, TransformNode, Color3, StandardMaterial, GlowLayer, SineEase, EasingFunction } from "babylonjs";
 
 
 let baseScene;
@@ -28,38 +28,29 @@ const initOptions = {
 };
 
 
-
-
-
-
-
-
-
 onMounted(async () => {
     baseScene = new BaseScene(canvasRef.value, initOptions);
     baseScene.initAxesHelper();
-
     // 创建球
     const sphere = MeshBuilder.CreateSphere('sphere', { diameter: 2 }, baseScene.scene)
     sphere.position = new Vector3(0, 0, 0)
     // 创建材质
-    const mat = new StandardMaterial("mat", scene);
-    mat.emissiveColor = new BABYLON.Color3(1, 1, 0);
-    mat.diffuseColor = new BABYLON.Color3(1, 1, 0);
+    const mat = new StandardMaterial("mat", baseScene.scene);
+    mat.emissiveColor = new Color3(0, 1, 1);
     sphere.material = mat;
 
     const glow = new GlowLayer("glow", baseScene.scene, {
         intensity: 0.5, // 光晕强度
-        blurKernelSize: 64, // 光晕模糊程度
+        blurKernelSize: 32, // 光晕模糊程度
     })
 
-    // Create a property to animate
+    // 创建一个用于动画效果的属性
     const emissiveStrength = {
         value: 1.0
     };
-    const glowMask = emissiveStrength; // alias for semantic clarity
+    const glowMask = emissiveStrength; // alias for semantic clarity 用于语义清晰性
 
-    // Glow render masking logic
+    //光晕渲染遮罩逻辑
     glow.onBeforeRenderMeshToEffect.add(() => {
         glowMask.value = 1.0;
     });
@@ -67,63 +58,33 @@ onMounted(async () => {
         glowMask.value = 0.0;
     });
 
-    // Animate emissive color intensity (flicker)
-    const flickerAnim = new Animation("flickerAnim", "value", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-        BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    //动画发光强度（闪烁）
+    const flickerAnim = new Animation("flickerAnim", "value", 60, Animation.ANIMATIONTYPE_FLOAT,
+        Animation.ANIMATIONLOOPMODE_CYCLE);
 
     const flickerKeys = [{
         frame: 0,
-        value: 0.2
-    },
-    {
-        frame: 5,
-        value: 0.8
-    },
-    {
-        frame: 10,
-        value: 0.1
-    },
-    {
-        frame: 25,
-        value: 0.8
+        value: 0
     },
     {
         frame: 30,
-        value: 0.05
+        value: 1
     },
     {
-        frame: 35,
-        value: 0.7
-    },
-    {
-        frame: 40,
-        value: 0.3
-    },
-    {
-        frame: 55,
-        value: 0.5
-    },
-    {
-        frame: 70,
-        value: 0.35
-    },
-    {
-        frame: 170,
-        value: 1.0
-    },
-    ];
+        frame: 60,
+        value: 0
+    }];
 
     flickerAnim.setKeys(flickerKeys);
 
-    const easingFunction = new BABYLON.SineEase();
-    easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+    const easingFunction = new SineEase();
+    easingFunction.setEasingMode(EasingFunction.EASINGMODE_EASEINOUT);
     flickerAnim.setEasingFunction(easingFunction);
 
-    scene.beginDirectAnimation(emissiveStrength, [flickerAnim], 0, 170, true);
+    baseScene.scene.beginDirectAnimation(emissiveStrength, [flickerAnim], 0, 170, true);
 
-    // Update material based on animated value
-    scene.registerBeforeRender(() => {
-        mat.emissiveColor = new BABYLON.Color3(1, 0.4, 0).scale(emissiveStrength.value);
+    baseScene.scene.registerBeforeRender(() => {
+        mat.emissiveColor = new Color3(0, 1, 1).scale(emissiveStrength.value);
     });
 
 
@@ -153,18 +114,5 @@ canvas {
     position: absolute;
     top: 10px;
     left: 10px;
-}
-
-
-.default-html {
-    width: 500px;
-    height: 500px;
-    background-color: red;
-    // color: green;
-    border: none;
-}
-
-.box {
-    font-size: 100px !important;
 }
 </style>
